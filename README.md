@@ -1,29 +1,28 @@
-# Детальна документація до системи інвентаризації
+Detailed documentation for the inventory system
 
-## Технічний огляд
+Technical overview
 
-### Архітектура додатку
+Application architecture
 
-Додаток побудований з використанням наступних компонентів:
-- **Frontend**: Flet (Python фреймворк для створення крос-платформних додатків)
-- **База даних**: SQLite (зберігається у файлі `inventory.db`)
-- **Мова програмування**: Python 3.8+
+The application is built using the following components:
 
-### Структура файлів
+Frontend: Flet (Python framework for creating cross-platform applications)
+Database: SQLite (stored in the inventory.db file)
+Programming language: Python 3.8+
+File structure
 
-- `main.py` - Вхідна точка програми, ініціалізація додатку
-- `db.py` - Взаємодія з базою даних
-- `models.py` - Моделі даних
-- `ui.py` - Графічний інтерфейс користувача
-- `requirements.txt` - Залежності проекту
-- `images/` - Директорія для зберігання зображень об'єктів
+main.py - Application entry point, application initialization
+db.py - Interaction with the database
+models.py - Data models
+ui.py - Graphical user interface
+requirements.txt - Project dependencies
+images/ - Directory for storing object images
+Detailed description of functionality
 
-## Детальний опис функціоналу
+1. Working with inventory
 
-### 1. Робота з інвентарем
+InventoryItem data model
 
-#### Модель даних `InventoryItem`
-```python
 class InventoryItem:
     def __init__(self, id: int, name: str, quantity: int, inv_number: str, 
                  category: str, added_at: str, location_id: int, status: str, 
@@ -40,81 +39,66 @@ class InventoryItem:
         self.image_path = image_path
         self.custom_fields = custom_fields
         self.description = description
-```
+Basic database operations
 
-#### Основні операції з БД
+Getting a list of objects
 
-**Отримання списку об'єктів**
-```python
-def get_inventory(sort_by="name", ascending=True, filters=None):
-    # Повертає список об'єктів інвентаризації
-    # sort_by - поле для сортування
-    # ascending - напрямок сортування
-    # filters - словник фільтрів у форматі {поле: значення}
-```
+def get_inventory(sort_by=“name”, ascending=True, filters=None):
+    # Returns a list of inventory objects
+    # sort_by - field for sorting
+    # ascending - sorting direction
+    # filters - dictionary of filters in the format {field: value}
+Adding a new object
 
-**Додавання нового об'єкта**
-```python
 def add_inventory(item):
-    # Додає новий об'єкт інвентаризації
-    # item - словник з даними об'єкта
-```
+    # Adds a new inventory object
+    # item - dictionary with object data
+Updating an existing object
 
-**Оновлення існуючого об'єкта**
-```python
 def edit_inventory(item_id, item):
-    # Оновлює дані об'єкта за ID
-    # item_id - ID об'єкта для оновлення
-    # item - словник з оновленими даними
-```
+    # Updates object data by ID
+    # item_id - ID of the object to be updated
+    # item - dictionary with updated data
+Deleting an object
 
-**Видалення об'єкта**
-```python
 def delete_inventory(item_id):
-    # Видаляє об'єкт за ID
-    # Також автоматично видаляє пов'язані зображення
-```
+    # Deletes an object by ID
+    # Also automatically deletes related images
+2. Managing storage locations
 
-### 2. Керування місцями зберігання
+Location data model
 
-#### Модель даних `Location`
-```python
 class Location:
     def __init__(self, id: int, name: str, parent_id: Optional[int]):
         self.id = id
         self.name = name
-        self.parent_id = parent_id  # Для створення ієрархії
-```
+        self.parent_id = parent_id  # To create a hierarchy
+Basic operations
 
-#### Основні операції
-- `get_locations()` - отримання списку місць зберігання
-- `add_location(name, parent_id)` - додавання нового місця
-- `edit_location(loc_id, name, parent_id)` - редагування місця
-- `delete_location(loc_id)` - видалення місця
+get_locations() - get a list of storage locations
+add_location(name, parent_id) - add a new location
+edit_location(loc_id, name, parent_id) - edit a location
+delete_location(loc_id) - delete a location
+3. Categories and statuses
 
-### 3. Категорії та статуси
+Getting lists
 
-#### Отримання списків
-- `get_categories()` - отримання списку категорій
-- `get_statuses()` - отримання списку статусів
+get_categories() - get a list of categories
+get_statuses() - get a list of statuses
+4. Data export
 
-### 4. Експорт даних
+Available export formats
 
-#### Доступні формати експорту
-- **CSV** - для подальшої обробки в електронних таблицях
-- **PDF** - для друку або архівування
+CSV - for further processing in spreadsheets
+PDF - for printing or archiving
+def export_inventory(fmt=“csv”, filename="inventory_export"):
+    # Exports data to the specified format
+    # fmt - export format (‘csv’ or ‘pdf’)
+    # filename - file name for export (without extension)
+5. Change log
 
-```python
-def export_inventory(fmt="csv", filename="inventory_export"):
-    # Експортує дані у вказаний формат
-    # fmt - формат експорту ('csv' або 'pdf')
-    # filename - ім'я файлу для експорту (без розширення)
-```
+HistoryRecord data model
 
-### 5. Журнал змін
-
-#### Модель даних `HistoryRecord`
-```python
 class HistoryRecord:
     def __init__(self, id: int, inventory_id: int, action: str, 
                  timestamp: str, details: str):
@@ -123,49 +107,49 @@ class HistoryRecord:
         self.action = action
         self.timestamp = timestamp
         self.details = details
-```
+Basic operations
 
-#### Основні операції
-- `log_history(inventory_id, action, details)` - додавання запису в журнал
-- `get_history()` - отримання всіх записів журналу
+log_history(inventory_id, action, details) - add a record to the log
+get_history() - get all log records
+Integration with other systems
 
-## Інтеграція з іншими системами
+REST API (possible development)
 
-### REST API (можливий розвиток)
-Додаток може бути розширений для надання REST API для віддаленого керування через HTTP-запити.
+The application can be extended to provide a REST API for remote control via HTTP requests.
 
-### Імпорт/Експорт даних
-Підтримується експорт у формати CSV та PDF. Для імпорту даних можна використовувати стандартні засоби обробки CSV-файлів.
+Data import/export
 
-## Розширення функціоналу
+Export to CSV and PDF formats is supported. Standard CSV file processing tools can be used to import data.
 
-### Додавання нових полів
-Для додавання нових полів до об'єктів інвентаризації використовуйте механізм користувацьких полів:
+Functionality extension
 
-```python
+Adding new fields
+
+To add new fields to inventory objects, use the custom fields mechanism:
+
 def add_custom_field(name, field_type):
-    # Додає нове користувацьке поле
-    # name - назва поля
-    # field_type - тип поля (наприклад, 'text', 'number', 'date')
-```
+    # Adds a new custom field
+    # name - field name
+    # field_type - field type (e.g., ‘text’, ‘number’, ‘date’)
+Custom reports
 
-### Кастомні звіти
-Для створення кастомних звітів можна використовувати SQL-запити безпосередньо до бази даних або розширити функціонал експорту.
+To create custom reports, you can use SQL queries directly to the database or extend the export functionality.
 
-## Налагодження та логування
+Debugging and logging
 
-Додаток веде лог роботи у консолі. Для розширеного логування рекомендується додати модуль `logging`.
+The application keeps a log of its work in the console. For advanced logging, it is recommended to add the logging module.
 
-## Відомі обмеження
+Known limitations
 
-1. Розмір бази даних SQLite обмежений розміром диска
-2. Відсутня підтримка одночасної роботи кількох користувачів
-3. Відсутня авторизація та розмежування прав доступу
+The size of the SQLite database is limited by the size of the disk
+No support for simultaneous work by multiple users
+No authorization and separation of access rights
+Future improvements
 
-## Майбутні покращення
+Addition of a web interface
+Implementation of client-server architecture
+Addition of an authorization system
+Support for working with external APIs
+Implementation of automatic backup
 
-1. Додавання веб-інтерфейсу
-2. Реалізація клієнт-серверної архітектури
-3. Додавання системи авторизації
-4. Підтримка роботи з зовнішніми API
-5. Впровадження автоматичного резервного копіювання
+Translated with DeepL.com (free version)
